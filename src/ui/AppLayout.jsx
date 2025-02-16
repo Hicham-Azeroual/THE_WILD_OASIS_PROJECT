@@ -14,6 +14,7 @@ const Main = styled.main`
   background-color: var(--color-grey-50);
   padding: 4rem 4.8rem 6.4rem;
   min-width: calc(100vw - 26rem);
+  overflow-y: auto; // Add scroll if content overflows
 `;
 
 function AppLayout() {
