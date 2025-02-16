@@ -5,14 +5,14 @@ const StyledLogo = styled.div`
 `;
 
 const Img = styled.img`
-  height: 9.6rem;
+  height: 5.6rem;
   width: auto;
 `;
 
 function Logo() {
   return (
     <StyledLogo>
-      <Img src="/logo-light.png" alt="Logo" />
+      <Img src="https://cdn-icons-png.flaticon.com/512/5167/5167654.png" alt="Logo" />
     </StyledLogo>
   );
 }
