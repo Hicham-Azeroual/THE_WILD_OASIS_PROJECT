@@ -10,21 +10,21 @@ import Account from "./pages/Account";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
 import AppLayout from "./ui/AppLayout";
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
- import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
- 
- const queryClient = new QueryClient({
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ToastBar, Toaster } from "react-hot-toast";
+
+const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 0/* 1000 * 30 */, // 5 minutes
+      staleTime: 0 /* 1000 * 30 */, // 5 minutes
     },
   },
- })
+});
 
 function App() {
   return (
-
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
       <GlobalStyles />
       <BrowserRouter>
@@ -42,10 +42,31 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
-      </BrowserRouter>    
-      </QueryClientProvider>
-
-  
+      </BrowserRouter>
+      <Toaster
+        position="top-center"
+        gutter={12}
+        containerClassName={{
+          margin: "8px",
+        }}
+        toastOptions={{
+          success: {
+            duration: 3000,
+          },
+          error: {
+            duration: 3000,
+          },
+          style: {
+ 
+            fontSize: "1rem",
+            maxWidth:"500px",
+            padding: "0.5rem 1rem",
+            backgroundColor:"var(--color-grey-0)",
+            color: "var(--color-grey-700)",
+          }
+        }}
+      ></Toaster>
+    </QueryClientProvider>
   );
 }
 
