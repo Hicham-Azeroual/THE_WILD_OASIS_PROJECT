@@ -6,6 +6,10 @@ import { useState } from "react";
 import CreateCabinForm from "./CreateCabinForm";
 import { useCabins } from "../../hooks/useCabins";
 import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
+import Modal from "../../ui/Modal";
+import Table from "../../ui/Table";
+import ConfirmDelete from "../../ui/ConfirmDelete";
+import Menus from "../../ui/Menus";
 const TableRow = styled.div`
   display: grid;
   grid-template-columns: 0.6fr 1.8fr 2.2fr 1fr 1fr 1fr;
@@ -68,7 +72,7 @@ function CabinRow({ cabin }) {
 
   return (
     <>
-      <TableRow>
+      <Table.Row>
         <Img
           src={
             image
@@ -82,21 +86,55 @@ function CabinRow({ cabin }) {
         <Price>{formatCurrency(regularPrice)}</Price>
         <Discount>{formatCurrency(discount)}</Discount>
         <Row>
-          <button disabled={isMutating} onClick={() => hancleDuplicate()} disabled={isMutating}>
-            {/*           <HiSquare25tack></HiSquare25tack>*/}
+          {/*           <button disabled={isMutating} onClick={() => hancleDuplicate()}>
 
             <HiSquare2Stack />
-          </button>
+          </button> */}
 
-          <button onClick={() => deleteCabin(cabinID)} disabled={isDeleting}>
-            <HiTrash></HiTrash>
-          </button>
-          <button onClick={() => setShowFrom((prev) => !prev)}>
-            <HiPencil></HiPencil>
-          </button>
+          <Modal>
+            <Menus.Menu>
+              <Menus.Toggle id={cabinID}></Menus.Toggle>
+              <Menus.List id={cabinID}>
+                <Menus.Button
+                  icon={<HiSquare2Stack />}
+                  onClick={hancleDuplicate}
+                  disabled={isMutating}
+                >
+                  Duplicate
+                </Menus.Button>
+                <Modal.Open opens="edit">
+                  {/*               <button onClick={() => setShowFrom((prev) => !prev)}>
+                <HiPencil></HiPencil>
+              </button> */}
+
+                  <Menus.Button
+                    icon={<HiPencil />}
+                    onClick={() => setShowFrom((prev) => !prev)}
+                  >
+                    Edit
+                  </Menus.Button>
+                </Modal.Open>
+
+                <Modal.Open opens="delete">
+                  <Menus.Button icon={<HiTrash />}>Delte</Menus.Button>
+                </Modal.Open>
+              </Menus.List>
+            </Menus.Menu>
+
+            <Modal.Window name="edit">
+              <CreateCabinForm cabinToEdit={cabin}></CreateCabinForm>
+            </Modal.Window>
+
+            <Modal.Window name="delete">
+              <ConfirmDelete
+                disabled={isDeleting}
+                resourceName="cabins"
+                onConfirm={() => deleteCabin(cabinID)}
+              ></ConfirmDelete>
+            </Modal.Window>
+          </Modal>
         </Row>
-      </TableRow>
-      {showFrom && <CreateCabinForm cabinToEdit={cabin}></CreateCabinForm>}
+      </Table.Row>
     </>
   );
 }

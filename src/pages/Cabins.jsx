@@ -1,6 +1,7 @@
 /* import { useEffect } from "react";
  */ import AddCabin from "../features/cabins/AddCabin";
 import CabinTable from "../features/cabins/CabinTable";
+import CabinTableOperation from "../features/cabins/CabinTableOperation";
 import CreateCabinForm from "../features/cabins/CreateCabinForm";
 import Button from "../ui/Button";
 import Heading from "../ui/Heading";
@@ -14,14 +15,15 @@ function Cabins() {
   },[]) */
   return (
     <>
-      {" "}
       <Row type="horizontal">
         <Heading as="h1">All cabins</Heading>
-        <p>Filter/sort</p>
+
+        <CabinTableOperation></CabinTableOperation>
       </Row>
       <Row>
         <CabinTable></CabinTable>
-
+      </Row>
+      <Row>
         <AddCabin></AddCabin>
       </Row>
     </>

@@ -1,8 +1,9 @@
-import { createContext, useContext, useState } from "react";
+import { cloneElement, createContext, useContext, useState } from "react";
 import { createPortal } from "react-dom";
 import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
 // Styled Components (unchanged)
+import React from "react";
 const StyledModal = styled.div`
   position: fixed;
   top: 50%;
@@ -85,7 +86,7 @@ Modal.Window = function Window({ name, children }) {
         <Button onClick={close}>
           <HiXMark />
         </Button>
-        <div>{children}</div>
+        <div>{cloneElement(children, { onClose:close })}</div>
       </StyledModal>
     </Overlay>,
     document.body
