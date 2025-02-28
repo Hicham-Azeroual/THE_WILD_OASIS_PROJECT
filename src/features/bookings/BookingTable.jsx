@@ -1,9 +1,20 @@
 import BookingRow from "./BookingRow";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
+import Empty from "../../ui/Empty";
+import { useBookings } from "../../hooks/useBookings";
+import Spinner from "../../ui/Spinner";
 
 function BookingTable() {
-  const bookings = [];
+
+
+  // Use useBookings with backend filtering and sorting
+  const { isLoading, bookings, error } = useBookings();
+
+  if (isLoading) return <Spinner />;
+  if (!bookings?.length) {
+    return <Empty resourceName="bookings" />;
+  }
 
   return (
     <Menus>

@@ -39,6 +39,7 @@ const StyledRow = styled(CommonRow)`
 
 const StyledBody = styled.section`
   margin: 0.4rem 0;
+
 `;
 
 const Footer = styled.footer`
