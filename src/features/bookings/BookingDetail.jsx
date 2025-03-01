@@ -7,8 +7,10 @@ import Tag from "../../ui/Tag";
 import ButtonGroup from "../../ui/ButtonGroup";
 import Button from "../../ui/Button";
 import ButtonText from "../../ui/ButtonText";
-
+import { getBooking } from "../../services/apiBookings";
 import { useMoveBack } from "../../hooks/useMoveBack";
+import { useBookings } from "../../hooks/useBookings";
+import Spinner from "../../ui/Spinner";
 
 const HeadingGroup = styled.div`
   display: flex;
@@ -17,11 +19,18 @@ const HeadingGroup = styled.div`
 `;
 
 function BookingDetail() {
-  const booking = {};
-  const status = "checked-in";
-
+  console.log("-------------------");
+  
+  getBooking(9);
+  console.log("-------------------");
+  const { booking, isLoading } = useBookings();
   const moveBack = useMoveBack();
 
+  if (isLoading) return <Spinner></Spinner>;
+
+  console.log(booking);
+  
+  const {status,id:bookingId}=booking
   const statusToTagName = {
     unconfirmed: "blue",
     "checked-in": "green",
@@ -32,14 +41,14 @@ function BookingDetail() {
     <>
       <Row type="horizontal">
         <HeadingGroup>
-          <Heading as="h1">Booking #X</Heading>
+          <Heading as="h1">Booking #{bookingId}</Heading>
           <Tag type={statusToTagName[status]}>{status.replace("-", " ")}</Tag>
         </HeadingGroup>
         <ButtonText onClick={moveBack}>&larr; Back</ButtonText>
       </Row>
 
-      <BookingDataBox booking={booking} />
-
+      {/*       <BookingDataBox booking={booking} />
+       */}
       <ButtonGroup>
         <Button variation="secondary" onClick={moveBack}>
           Back

@@ -10,6 +10,7 @@ function Bookings() {
         <BookingTableOperations></BookingTableOperations>
       </Row>
       <BookingTable></BookingTable>
+      
     </>
   );
 }

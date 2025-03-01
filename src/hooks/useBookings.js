@@ -6,26 +6,59 @@ import {
   deleteBooking,
 } from "../services/apiBookings";
 import toast from "react-hot-toast";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
+
+const itemsPerPage = 10;
 
 export function useBookings() {
   const [searchParams] = useSearchParams();
-
+const queryClient = useQueryClient();
   // Get filter and sort parameters from URL
   const filterStatus = searchParams.get("status") || "all";
   const sortValue = searchParams.get("sortBy") || "startDate-asc";
   const [sortField, sortDirection] = sortValue.split("-");
-  const queryClient = useQueryClient();
+  const paginationPage = Number(searchParams.get("page")) || 1;
+  const {bookinId}=useParams();
+  
 
   // Fetch all bookings
-  const {
-    isLoading,
-    data: bookings,
-    error,
-  } = useQuery({
-    queryKey: ["bookings", filterStatus, sortField, sortDirection], // Dynamic query key
-    queryFn: () => getAllBookings(filterStatus, sortField, sortDirection),
+  const { isLoading, data, error } = useQuery({
+    queryKey: [
+      "bookings",
+      filterStatus,
+      sortField,
+      sortDirection,
+      paginationPage,
+    ],
+    queryFn: () =>
+      getAllBookings(
+        filterStatus,
+        sortField,
+        sortDirection,
+        paginationPage,
+        itemsPerPage
+      ),
   });
+  // Destructure bookings and count from data
+  const { data: bookings, count } = data || {};
+
+  // Pre-fetch the next page of bookings when the user scrolls to the bottom of the current page
+  const nextPage = paginationPage + 1;
+  const hasNextPage = nextPage <= Math.ceil(count / itemsPerPage);
+
+  if (hasNextPage) {
+    queryClient.prefetchQuery({
+      queryKey: ["bookings", filterStatus, sortField, sortDirection, nextPage],
+      queryFn: () =>
+        getAllBookings(
+          filterStatus,
+          sortField,
+          sortDirection,
+          nextPage,
+          itemsPerPage
+        ),
+    });
+  }
 
   // Fetch a single booking (remains unchanged, but ensure queryKey matches if used dynamically)
   const {
@@ -33,10 +66,12 @@ export function useBookings() {
     data: booking,
     error: bookingError,
   } = useQuery({
-    queryKey: ["bookings"],
-    queryFn: getBooking,
+    queryKey: ["booking"],
+    queryFn: () => getBooking(bookinId),
     enabled: false, // This query will only run when explicitly enabled
-  });
+    retry:false  
+});
+
 
   // Update a booking
   const { mutate: mutateBooking, isLoading: isUpdating } = useMutation({
@@ -81,5 +116,6 @@ export function useBookings() {
     isUpdating,
     deleteBooking: deleteBookingMutation,
     isDeleting,
+    count,
   };
 }

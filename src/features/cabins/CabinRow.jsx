@@ -9,6 +9,8 @@ import Modal from "../../ui/Modal";
 import Table from "../../ui/Table";
 import ConfirmDelete from "../../ui/ConfirmDelete";
 import Menus from "../../ui/Menus";
+
+import { getBooking } from "../../services/apiBookings";
 /* const TableRow = styled.div`
   display: grid;
   column-gap: 2.4rem;
@@ -51,6 +53,7 @@ const Discount = styled.div`
 function CabinRow({ cabin }) {
   const [showFrom, setShowFrom] = useState(false);
   const { deleteCabin, isDeleting, mutateCabin, isMutating } = useCabins();
+
 
   const {
     id: cabinID,

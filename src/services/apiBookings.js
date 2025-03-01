@@ -2,10 +2,13 @@ import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
 // fucntion to get all bookings
-export async function getAllBookings(filterStatus = "all", sortField = "startDate", sortDirection = "asc") {
+export async function getAllBookings(filterStatus = "all", sortField = "startDate", sortDirection = "asc", paginationPage = 1, itemsPerPage = 10) {
+  // Calculate the offset based on the page number and items per page
+  const offset = (paginationPage - 1) * itemsPerPage;
+
   let query = supabase
     .from("bookings")
-    .select("*, cabins(name), guests(fullName,email)")
+    .select("*, cabins(name), guests(fullName,email)", { count: 'exact' }) // Request the exact count
     .order(sortField, { ascending: sortDirection === "asc" });
 
   // Apply filter if status is not "all"
@@ -13,16 +16,18 @@ export async function getAllBookings(filterStatus = "all", sortField = "startDat
     query = query.eq("status", filterStatus);
   }
 
-  const { data, error } = await query;
+  // Apply pagination
+  query = query.range(offset, offset + itemsPerPage - 1);
+
+  const { data, error,count } = await query;
 
   if (error) {
     console.error(error);
     throw new Error("Bookings not found");
   }
 
-  return data;
+  return {data,count};
 }
-
 export async function getBooking(id) {
   const { data, error } = await supabase
     .from("bookings")
